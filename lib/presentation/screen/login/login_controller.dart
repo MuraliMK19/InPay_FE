@@ -32,9 +32,9 @@ class LoginController {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       // Success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login Success: ${result['token']}")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login Success")));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
