@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -65,6 +66,36 @@ class ApiService {
       }
     } catch (e) {
       print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<List<dynamic>?> fetchTransactions() async {
+    try {
+      // 1. Get the saved JWT token
+      final token = await _storage.read(key: 'jwt_token');
+
+      // 2. Call your Go Backend
+      final response = await http
+          .get(
+            Uri.parse('$baseUrl/api/transactions'),
+            headers: {
+              'Authorization':
+                  'Bearer $token', // The "Passport" for the request
+              'Content-Type': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        // 3. Convert the JSON string into a Dart List
+        return jsonDecode(response.body) as List<dynamic>;
+      } else {
+        debugPrint("Server Error: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Network Error: $e");
       return null;
     }
   }
